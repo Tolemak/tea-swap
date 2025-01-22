@@ -57,3 +57,22 @@ export const cronosConfig = {
     'https://cronoscan.com'
   ]
 }
+
+export const teaConfig = {
+  chainId: 93384,
+  chainName: 'tea-assam',
+  network: 'tea-assam',
+  nativeCurrency: {
+    name: 'Tea',
+    symbol: '$TEA',
+    decimals: 18
+  },
+  rpcUrls: [
+    'https://assam-rpc.tea.xyz'
+
+  ],
+  blockExplorers: [
+    'https://assam.tea.xyz'
+  ]
+
+}
