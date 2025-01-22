@@ -3,7 +3,7 @@ import { readContract, writeContract } from '@wagmi/core';
 import { config } from '../config/wagmi';
 import { Address } from 'viem';
 import { Abis } from '@/utils';
-import { CONTRACT_ADDRESS, TOKEN_LIST, WCRO, VVS2Router, fee, } from '../config';
+import { CONTRACT_ADDRESS, TOKEN_LIST, VVS2Router, fee, } from '../config';
 import { CONTRACT_ABI, VVS2_ABI } from '@/utils';
 import { getBalance } from 'wagmi/actions';
 import { parseEther } from 'viem'
@@ -36,19 +36,12 @@ export const getQuote = async (config: Config, baseToken: number, baseAmount: nu
 
 
   const quote = TOKEN_LIST[quoteToken];
-  if (base.isNative && quote.name == "WCRO") return baseAmount;
-  if (base.name == "WCRO" && quote.isNative) return baseAmount;
 
-  let token1 = base.isNative ? WCRO : base;
-  let token2 = quote.isNative ? WCRO : quote;
+  let token1 = base;
+  let token2 = quote;
   try {
     const abi = VVS2_ABI;
     let path: any;
-    if (token1.name == "WCRO" || token2.name == "WCRO") {
-      path = [token1.address as Address, token2.address as Address];
-    } else {
-      path = [token1.address as Address, WCRO.address as Address, token2.address as Address];
-    }
     let res: any = await readContract(config, {
       abi, address: VVS2Router as Address,
       functionName: "getAmountsOut",
@@ -285,17 +278,9 @@ export const swapTokenForToken = async (config: Config, baseToken: number, quote
 export const swapTokens = async (config: Config, baseToken: number, quoteToken: number, baseAmount: number, address: Address | undefined) => {
   let res: boolean;
   if (TOKEN_LIST[baseToken].isNative) {
-    if (TOKEN_LIST[quoteToken].name == "WCRO") {
-      res = await deposit(config, baseAmount, address);
-    } else {
-      res = await swapNativeForToken(config, quoteToken, baseAmount, address);
-    }
+    res = await swapNativeForToken(config, quoteToken, baseAmount, address);
   } else if (TOKEN_LIST[quoteToken].isNative) {
-    if (TOKEN_LIST[baseToken].name == "WCRO") {
-      res = await withdraw(config, baseToken, baseAmount, address);
-    } else {
-      res = await swapTokenForNative(config, baseToken, baseAmount, address);
-    }
+    res = await swapTokenForNative(config, baseToken, baseAmount, address);
   } else {
     res = await swapTokenForToken(config, baseToken, quoteToken, baseAmount, address)
   }

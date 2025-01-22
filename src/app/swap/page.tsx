@@ -14,8 +14,8 @@ import { useRouter } from "next/navigation"
 import { useAppContext } from "@/context/AppContext"
 
 export default function Page() {
-  const [baseToken, setBaseToken] = useState(3);
-  const [quoteToken, setQuoteToken] = useState(2);
+  const [baseToken, setBaseToken] = useState(0);
+  const [quoteToken, setQuoteToken] = useState(1);
   const [baseAmount, setBaseAmount] = useState(0);
   const [quoteAmount, setQuoteAmount] = useState(0);
   const [isSwapping, setIsSwapping] = useState(false);
